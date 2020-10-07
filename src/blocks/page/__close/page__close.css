@@ -1,0 +1,21 @@
+.page__close {
+  border: 0;
+  width: 47px;
+  height: 45px;
+  position: absolute;
+  right: -47px;
+  top: -45px;
+  background: transparent url('../../../images/close.svg') no-repeat 100%;
+  outline: 0;
+}
+
+.page__close:hover {
+  filter: opacity(.6);
+  cursor: pointer;
+}
+
+@media all and (max-width: 425px) {
+  .page__close {
+    right: -15px;
+  }
+}

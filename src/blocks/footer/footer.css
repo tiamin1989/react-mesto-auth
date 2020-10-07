@@ -1,0 +1,15 @@
+.footer {
+  padding: 53px 13.3% 38px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 18px;
+  line-height: 22px;
+  color: #545454;
+}
+
+@media all and (max-width: 425px) {
+  .footer {
+    padding: 43px 3% 19px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}

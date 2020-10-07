@@ -1,0 +1,17 @@
+.auth__sentence {
+  height: 17px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #FFFFFF;
+  text-decoration: none;
+  margin: 15px 0 0;
+  transition: filter .2s linear;
+}
+
+.auth__sentence:hover {
+  filter: opacity(.6);
+}
