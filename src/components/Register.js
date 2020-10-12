@@ -16,7 +16,9 @@ function Register({ onRegister }) {
     e.preventDefault();
     register(email, password).then((res) => {
       if (res.ok) {
-        res.json().then(() => onRegister(true, 'Регистрация прошла успешно!'));
+        res.json().then(() => {
+          onRegister(true, 'Регистрация прошла успешно!', email, password)
+        });
       } else {
         res.json().then((res) => onRegister(false, res.error));
       }

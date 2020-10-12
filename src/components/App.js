@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -31,6 +32,8 @@ function App() {
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
   const [userData, setUserData] = useState({});
+
+  const history = useHistory();
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser._id);
@@ -117,9 +120,17 @@ function App() {
       });
   }
 
-  function handleRegisterSumbit(isSuccess, errorText) {
-    setIsSuccess(isSuccess);
-    setInfoTooltipPopupOpen(true);
+  function handleRegisterSumbit(isSuccess, errorText, data) {
+    if (isSuccess) {
+      history.push('/sign-in');
+      setIsSuccess(isSuccess);
+      setInfoTooltipPopupOpen(true);
+      setUserData({
+        email: data.email,
+        _id: data._id
+      });
+      return;
+    }
     errorText ? setErrorText(errorText) : setErrorText('');
   }
 
@@ -157,7 +168,7 @@ function App() {
       .catch((err) => {
         setErrorText(err);
       });
-  }, [cards]);
+  }, []);
 
   React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
@@ -213,7 +224,7 @@ function App() {
             />
           </Route>
           <ProtectedRoute
-            path="/"
+            exact path="/"
             loggedIn={loggedIn}
             onEditAvatar={handleEditAvatarClick}
             onEditProfile={handleEditProfileClick}
@@ -270,4 +281,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);
