@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -12,6 +12,9 @@ import { connectApi } from '../utils/utils.js';
 import { CurrentUserContext, userContext } from '../contexts/CurrentUserContext.js';
 import Register from './Register.js';
 import Login from './Login.js';
+import ProtectedRoute from './ProtectedRoute.js';
+import InfoTooltip from './InfoTooltip.js';
+import { tokenCheck } from '../utils/auth.js';
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -24,7 +27,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState(userContext);
   const [cards, setCards] = useState([]);
   const [errorText, setErrorText] = useState('');
-  const [loggedIn, setSoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser._id);
@@ -83,6 +88,7 @@ function App() {
     setAddPlacePopupOpen(false);
     setConfirmPopupOpen(false);
     setImagePopupOpen(false);
+    setInfoTooltipPopupOpen(false);
   }
 
   function handleCardClick(e) {
@@ -110,6 +116,23 @@ function App() {
       });
   }
 
+  function handleRegisterSumbit(isSuccess, errorText) {
+    setIsSuccess(isSuccess);
+    setInfoTooltipPopupOpen(true);
+    errorText ? setErrorText(errorText) : setErrorText('');
+  }
+
+  function handleLoginSubmit(isSuccess, errorText, token) {console.log('isSuccess',isSuccess)
+    if (!isSuccess) {
+      setIsSuccess(isSuccess);
+      setInfoTooltipPopupOpen(true);
+    } else {
+      localStorage.setItem('jwt', token);
+      setLoggedIn(true);
+    }
+    errorText ? setErrorText(errorText) : setErrorText('');
+  }
+
   React.useEffect(() => {
     connectApi.getInitialCards()
       .then(res => {
@@ -129,6 +152,20 @@ function App() {
   }, [cards]);
 
   React.useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      tokenCheck(jwt)
+        .then((res) => {
+          if (res.ok) {
+            res.json().then((res) => {
+              setLoggedIn(true);
+            });
+          } else {
+            setErrorText('Переданный токен некорректен');
+          }
+        })
+    }
+
     connectApi.getPersonData()
       .then(res => {
         setCurrentUser(res);
@@ -145,26 +182,38 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/sign-up">
-            <Register />
+            <Register
+              onRegister={handleRegisterSumbit}
+            />
           </Route>
           <Route path="/sign-in">
-            <Login />
+            <Login
+              loggedIn={loggedIn}
+              onLogin={handleLoginSubmit}
+            />
           </Route>
-          <Route path="/">
-            {<Redirect to={`/${loggedIn ? '' : 'sign-in'}`} />}
-          </Route>
+          <ProtectedRoute
+            path="/"
+            loggedIn={loggedIn}
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onConfirm={handleConfirmClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            component={Main}
+          />
         </Switch>
       </BrowserRouter>
-      <Main
-        onEditAvatar={handleEditAvatarClick}
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onConfirm={handleConfirmClick}
-        onCardClick={handleCardClick}
-        cards={cards}
-        onCardLike={handleCardLike}
-      />
+
       <Footer />
+
+      <InfoTooltip
+        isOpen={isInfoTooltipPopupOpen}
+        onClose={closeAllPopups}
+        isSuccess={isSuccess}>
+      </InfoTooltip>
 
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}

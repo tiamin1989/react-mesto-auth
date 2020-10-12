@@ -8,6 +8,9 @@
 @import url('./__photo-container/popup__photo-container.css');
 @import url('./__figure/popup__figure.css');
 @import url('./__image/popup__image.css');
+@import url('./__message/popup__message.css');
+@import url('./__message-text/popup__message-text.css');
+@import url('./__message-image/popup__message-image.css');
 
 .popup {
   visibility: hidden;
