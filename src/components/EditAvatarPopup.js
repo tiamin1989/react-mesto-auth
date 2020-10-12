@@ -20,7 +20,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       isOpen={isOpen}
       onClose={onClose}>
       <input
-        id="card-link"
+        id="card-popup-link"
         name="url"
         type="url"
         ref={avatarRef}
@@ -29,7 +29,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
         required
       />
       <span
-        id="card-link-error"
+        id="card-popup-link-error"
         className="popup__error"
       />
       <input

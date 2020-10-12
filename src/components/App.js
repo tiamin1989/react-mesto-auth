@@ -30,6 +30,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
+  const [userData, setUserData] = useState({});
 
   function handleCardLike(card) {
     const isLiked = card.likes.some(like => like._id === currentUser._id);
@@ -122,7 +123,7 @@ function App() {
     errorText ? setErrorText(errorText) : setErrorText('');
   }
 
-  function handleLoginSubmit(isSuccess, errorText, token) {console.log('isSuccess',isSuccess)
+  function handleLoginSubmit(isSuccess, errorText, token) {
     if (!isSuccess) {
       setIsSuccess(isSuccess);
       setInfoTooltipPopupOpen(true);
@@ -131,6 +132,13 @@ function App() {
       setLoggedIn(true);
     }
     errorText ? setErrorText(errorText) : setErrorText('');
+  }
+
+  function handleClickAction() {
+    if (loggedIn) {
+      localStorage.removeItem('jwt');
+      setLoggedIn(false);
+    }
   }
 
   React.useEffect(() => {
@@ -158,6 +166,10 @@ function App() {
         .then((res) => {
           if (res.ok) {
             res.json().then((res) => {
+              setUserData({
+                email: res.data.email,
+                _id: res.data._id
+              });
               setLoggedIn(true);
             });
           } else {
@@ -175,9 +187,17 @@ function App() {
       });
   }, []);
 
+  React.useEffect(() => {
+
+  }, [userData]);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header />
+      <Header
+        onClick={handleClickAction}
+        loggedIn={loggedIn}
+        userData={userData}
+      />
       <div className="page__divider">{errorText}</div>
       <BrowserRouter>
         <Switch>
