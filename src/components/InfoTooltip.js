@@ -2,7 +2,7 @@ import React from 'react';
 import successImg from '../images/success.svg';
 import warningImg from '../images/warning.svg';
 
-function InfoTooltip({ isSuccess, isOpen, name, onClose }) {
+function InfoTooltip({ isSuccess, isOpen, onClose }) {
 
   return (
     <div className={`popup ${isOpen ? 'page_opened' : 'page_closed'}`}>

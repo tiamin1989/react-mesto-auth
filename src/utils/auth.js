@@ -7,7 +7,15 @@ export const register = (email, password) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ email, password })
-  });
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      res.json().then((res) => {
+        return Promise.reject(res.error);
+      });
+    });
 };
 
 export const authorize = (email, password) => {
@@ -17,7 +25,15 @@ export const authorize = (email, password) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({ email, password })
-  });
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      res.json().then((res) => {
+        return Promise.reject(res.message);
+      });
+    });
 };
 
 export const tokenCheck = (token) => {
@@ -27,5 +43,13 @@ export const tokenCheck = (token) => {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     }
-  });
+  })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      res.json().then((res) => {
+        return Promise.reject(res.message);
+      });
+    });
 }

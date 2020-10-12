@@ -34,7 +34,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         id="profile-name"
         name="name"
         type="text"
-        defaultValue={name}
+        value={name}
         className="popup__input"
         minLength="2"
         maxLength="40"
@@ -49,7 +49,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
         id="profile-activity"
         name="about"
         type="text"
-        defaultValue={description}
+        value={description}
         className="popup__input"
         minLength="2"
         maxLength="200"

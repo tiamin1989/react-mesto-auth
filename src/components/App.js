@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -120,14 +120,15 @@ function App() {
       });
   }
 
-  function handleRegisterSumbit(isSuccess, errorText, data) {
+  function handleRegisterSumbit(isSuccess, errorText, email, id) {
     if (isSuccess) {
+      setErrorText(errorText);
       history.push('/sign-in');
       setIsSuccess(isSuccess);
       setInfoTooltipPopupOpen(true);
       setUserData({
-        email: data.email,
-        _id: data._id
+        email: email,
+        _id: id
       });
       return;
     }
@@ -139,8 +140,10 @@ function App() {
       setIsSuccess(isSuccess);
       setInfoTooltipPopupOpen(true);
     } else {
+      setErrorText(errorText);
       localStorage.setItem('jwt', token);
       setLoggedIn(true);
+      return;
     }
     errorText ? setErrorText(errorText) : setErrorText('');
   }
@@ -175,32 +178,21 @@ function App() {
     if (jwt) {
       tokenCheck(jwt)
         .then((res) => {
-          if (res.ok) {
-            res.json().then((res) => {
-              setUserData({
-                email: res.data.email,
-                _id: res.data._id
-              });
-              setLoggedIn(true);
-            });
-          } else {
-            setErrorText('Переданный токен некорректен');
-          }
+          setUserData({
+            email: res.data.email,
+            _id: res.data._id
+          });
+          setLoggedIn(true);
         })
+        .catch((err) => setErrorText(err));
     }
 
     connectApi.getPersonData()
       .then(res => {
         setCurrentUser(res);
       })
-      .catch((err) => {
-        setErrorText(err);
-      });
+      .catch((err) => setErrorText(err));
   }, []);
-
-  React.useEffect(() => {
-
-  }, [userData]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -210,33 +202,34 @@ function App() {
         userData={userData}
       />
       <div className="page__divider">{errorText}</div>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/sign-up">
-            <Register
-              onRegister={handleRegisterSumbit}
-            />
-          </Route>
-          <Route path="/sign-in">
-            <Login
-              loggedIn={loggedIn}
-              onLogin={handleLoginSubmit}
-            />
-          </Route>
-          <ProtectedRoute
-            exact path="/"
-            loggedIn={loggedIn}
-            onEditAvatar={handleEditAvatarClick}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onConfirm={handleConfirmClick}
-            onCardClick={handleCardClick}
-            cards={cards}
-            onCardLike={handleCardLike}
-            component={Main}
+      <Switch>
+
+        <Route path="/sign-up">
+          <Register
+            onRegister={handleRegisterSumbit}
           />
-        </Switch>
-      </BrowserRouter>
+        </Route>
+
+        <Route path="/sign-in">
+          <Login
+            loggedIn={loggedIn}
+            onLogin={handleLoginSubmit}
+          />
+        </Route>
+
+        <ProtectedRoute
+          exact path="/"
+          loggedIn={loggedIn}
+          onEditAvatar={handleEditAvatarClick}
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onConfirm={handleConfirmClick}
+          onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          component={Main}
+        />
+      </Switch>
 
       <Footer />
 
