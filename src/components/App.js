@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -15,7 +15,7 @@ import Register from './Register.js';
 import Login from './Login.js';
 import ProtectedRoute from './ProtectedRoute.js';
 import InfoTooltip from './InfoTooltip.js';
-import { tokenCheck } from '../utils/auth.js';
+import { tokenCheck, authorize, register } from '../utils/auth.js';
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -120,32 +120,37 @@ function App() {
       });
   }
 
-  function handleRegisterSumbit(isSuccess, errorText, email, id) {
-    if (isSuccess) {
-      setErrorText(errorText);
-      history.push('/sign-in');
-      setIsSuccess(isSuccess);
-      setInfoTooltipPopupOpen(true);
-      setUserData({
-        email: email,
-        _id: id
+  function handleRegisterSumbit(email, password) {
+    register(email, password)
+      .then((res) => {
+        setErrorText('');
+        history.push('/sign-in');
+        setIsSuccess(true);
+        setInfoTooltipPopupOpen(true);
+        setUserData({
+          email: res.email,
+          _id: res._id
+        });
+      })
+      .catch((err) => {
+        setErrorText(err);
+        setIsSuccess(false);
+        setInfoTooltipPopupOpen(true);
       });
-      return;
-    }
-    errorText ? setErrorText(errorText) : setErrorText('');
   }
 
-  function handleLoginSubmit(isSuccess, errorText, token) {
-    if (!isSuccess) {
-      setIsSuccess(isSuccess);
-      setInfoTooltipPopupOpen(true);
-    } else {
-      setErrorText(errorText);
-      localStorage.setItem('jwt', token);
-      setLoggedIn(true);
-      return;
-    }
-    errorText ? setErrorText(errorText) : setErrorText('');
+  function handleLoginSubmit(email, password) {
+    authorize(email, password)
+      .then((res) => {
+        setErrorText('');
+        localStorage.setItem('jwt', res.token);
+        setLoggedIn(true);
+      })
+      .catch((err) => {
+        setErrorText(err);
+        setIsSuccess(false);
+        setInfoTooltipPopupOpen(true);
+      });
   }
 
   function handleClickAction() {
@@ -211,12 +216,15 @@ function App() {
         </Route>
 
         <Route path="/sign-in">
-          <Login
-            loggedIn={loggedIn}
-            onLogin={handleLoginSubmit}
-          />
+          {
+            () => !loggedIn ? (
+              <Login
+                onLogin={handleLoginSubmit}
+              />
+            ) : <Redirect to="./" />
+          }
         </Route>
-
+        {/* Защищенный роут, также выполняет роль роута по умолчанию */}
         <ProtectedRoute
           exact path="/"
           loggedIn={loggedIn}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { register } from '../utils/auth.js';
 
 function Register({ onRegister }) {
   const [email, setEmail] = useState('');
@@ -8,11 +7,7 @@ function Register({ onRegister }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    register(email, password)
-      .then((res) => {
-        onRegister(true, 'Регистрация прошла успешно!', res.email, res._id)
-      })
-      .catch((err) => onRegister(false, err));
+    onRegister(email, password);
   }
 
   return (
