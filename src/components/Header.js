@@ -1,14 +1,19 @@
 import React from 'react';
 import logo from '../images/logo.svg';
+import { useLocation, Link } from 'react-router-dom';
 
 function Header({ loggedIn, userData, onClick }) {
-  console.log('userData',userData)
+  const location = useLocation();
+
   return (
     <header className="header">
       <img src={logo} alt="Логотип Mesto - Russia" className="header__logo" />
       <div className="header__auth-wrapper">
         <span className="header__auth-email">{userData ? userData.email : ''}</span>
-        <a className="header__auth-action" href={loggedIn ? '/' : '/sign-up'} onClick={onClick}>{loggedIn ? 'Выйти' : 'Регистрация'}</a>
+        {!loggedIn ?
+          (<Link to={location.pathname === '/sign-in' ? '/sign-up' : '/sign-in'} className="header__auth-action">{location.pathname === '/sign-in' ? 'Регистрация' : 'Войти'}</Link>) :
+          (<a className="header__auth-action" href="/sign-in" onClick={onClick}>Выйти</a>)
+        }
       </div>
     </header>
   )
