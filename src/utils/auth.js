@@ -12,7 +12,7 @@ export const register = (email, password) => {
       if (res.ok) {
         return res.json();
       }
-      res.json().then((res) => {
+      return res.json().then((res) => {
         return Promise.reject(res.error);
       });
     });
@@ -30,7 +30,7 @@ export const authorize = (email, password) => {
       if (res.ok) {
         return res.json();
       }
-      res.json().then((res) => {
+      return res.json().then((res) => {
         return Promise.reject(res.message);
       });
     });
@@ -48,7 +48,7 @@ export const tokenCheck = (token) => {
       if (res.ok) {
         return res.json();
       }
-      res.json().then((res) => {
+      return res.json().then((res) => {
         return Promise.reject(res.message);
       });
     });

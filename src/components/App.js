@@ -203,8 +203,8 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <Header
         onClick={handleClickAction}
-        loggedIn={loggedIn}
         userData={userData}
+        loggedIn={loggedIn}
       />
       <div className="page__divider">{errorText}</div>
       <Switch>
