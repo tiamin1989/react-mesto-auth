@@ -157,6 +157,7 @@ function App() {
     if (loggedIn) {
       localStorage.removeItem('jwt');
       setLoggedIn(false);
+      setUserData({});
     }
   }
 
