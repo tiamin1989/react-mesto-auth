@@ -12,7 +12,7 @@ function Header({ loggedIn, userData, onClick }) {
         <span className="header__auth-email">{userData ? userData.email : ''}</span>
         {!loggedIn ?
           (<Link to={location.pathname === '/sign-in' ? '/sign-up' : '/sign-in'} className="header__auth-action">{location.pathname === '/sign-in' ? 'Регистрация' : 'Войти'}</Link>) :
-          (<a className="header__auth-action" href="/sign-in" onClick={onClick}>Выйти</a>)
+          (<Link to="/sign-in" className="header__auth-action" onClick={onClick}>Выйти</Link>)
         }
       </div>
     </header>
