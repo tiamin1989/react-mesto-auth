@@ -183,7 +183,7 @@ function App() {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       tokenCheck(jwt)
-        .then((res) => {console.log(res)
+        .then((res) => {
           setUserData({
             email: res.data.email,
             _id: res.data._id
