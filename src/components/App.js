@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
+import { Route, Switch, withRouter, Redirect, useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -225,7 +224,7 @@ function App() {
             ) : <Redirect to="./" />
           }
         </Route>
-        {/* Защищенный роут, также выполняет роль роута по умолчанию */}
+
         <ProtectedRoute
           exact path="/"
           loggedIn={loggedIn}
