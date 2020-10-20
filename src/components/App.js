@@ -199,6 +199,13 @@ function App() {
       .catch((err) => setErrorText(err));
   }, []);
 
+  /* React.useEffect(() => {
+    setUserData({
+      email: userData.email,
+      _id: userData._id
+    });
+  }, [loggedIn]) */
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Header
