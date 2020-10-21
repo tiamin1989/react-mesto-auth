@@ -13,7 +13,7 @@ export const register = (email, password) => {
         return res.json();
       }
       return res.json().then((res) => {
-        return Promise.reject(res.error);
+        return Promise.reject(res.message);
       });
     });
 };
