@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://tiamin.students.nomoreparties.xyz/api';
+export const BASE_URL = 'http://api.tiamin.students.nomoreparties.xyz';
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
