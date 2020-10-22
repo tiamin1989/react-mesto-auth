@@ -1,12 +1,12 @@
 class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
-    this.token = options.headers.authorization;
+    /* this.token = options.headers.authorization; */
   }
-  getInitialCards() {
+  getInitialCards(token) {
     return fetch(`${this.baseUrl}/cards`, {
       headers: {
-        authorization: this.token
+        Authorization: token
       }
     })
       .then(res => {
@@ -14,10 +14,11 @@ class Api {
         return Promise.reject(`Ошибка: ${res.status}`);
       })
   }
-  getPersonData() {
+  getPersonData(token, id) {
     return fetch(`${this.baseUrl}/users/me`, {
       headers: {
-        authorization: this.token
+        Authorization: token,
+        id: id
       }
     })
       .then(res => {
@@ -27,11 +28,11 @@ class Api {
         return Promise.reject(`Ошибка: ${res.status}`);
       })
   }
-  savePersonData({ name, about }) {
+  savePersonData(token, { name, about }) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
-        authorization: this.token,
+        Authorization: token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -43,11 +44,11 @@ class Api {
         if (!res.ok) return Promise.reject(`Ошибка: ${res.status}`);
       })
   }
-  saveCardData({ name, link }) {
+  saveCardData(token, { name, link }) {
     return fetch(`${this.baseUrl}/cards`, {
       method: 'POST',
       headers: {
-        authorization: this.token,
+        Authorization: token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -60,33 +61,36 @@ class Api {
         return res.json();
       })
   }
-  deleteCardData(cardId) {
+  deleteCardData(token, cardId) {
     return fetch(`${this.baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: {
-        authorization: this.token,
+        Authorization: token,
         'Content-Type': 'application/json'
       }
     })
   }
-  likeCard(cardId, isLiked) {
+  likeCard(token, cardId, isLiked, id) {
     return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
       method: isLiked ? 'DELETE' : 'PUT',
       headers: {
-        authorization: this.token,
+        Authorization: token,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        userId: id
+      })
     })
       .then(res => {
         if (!res.ok) return Promise.reject(`Ошибка: ${res.status}`);
         return res.json();
       })
   }
-  changeAvatar({ avatar }) {
+  changeAvatar(token, { avatar }) {
     return fetch(`${this.baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: {
-        authorization: this.token,
+        authorization: token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

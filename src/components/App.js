@@ -30,13 +30,13 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(true);
-  const [userData, setUserData] = useState({});
 
   const history = useHistory();
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(like => like._id === currentUser._id);
-    connectApi.likeCard(card._id, isLiked).then((newCard) => {
+    const jwt = localStorage.getItem('jwt');
+    const isLiked = card.likes.some(likeId => likeId === currentUser._id);
+    connectApi.likeCard(`Bearer ${jwt}`, card._id, isLiked, currentUser._id).then((newCard) => {
       const newCards = cards.map((c) => c._id === card._id ? newCard : c);
       setCards(newCards);
     })
@@ -46,7 +46,8 @@ function App() {
   }
 
   function handleCardDelete() {
-    connectApi.deleteCardData(cardId)
+    const jwt = localStorage.getItem('jwt');
+    connectApi.deleteCardData(`Bearer ${jwt}`, cardId)
       .then(() => {
         const newCards = cards.filter((c) => c._id !== cardId);
         setCards(newCards);
@@ -57,7 +58,8 @@ function App() {
   }
 
   function handleAddPlaceSubmit(newCard) {
-    connectApi.saveCardData(newCard)
+    const jwt = localStorage.getItem('jwt');
+    connectApi.saveCardData(`Bearer ${jwt}`, newCard)
       .then(res => {
         setCards(
           [...cards, res]
@@ -100,7 +102,8 @@ function App() {
   }
 
   function handleUpdateUser({ name, about, avatar }) {
-    connectApi.savePersonData({ name, about })
+    const jwt = localStorage.getItem('jwt');
+    connectApi.savePersonData(`Bearer ${jwt}`, { name, about })
       .then(() => {
         setCurrentUser({ name, about, avatar });
       })
@@ -110,9 +113,10 @@ function App() {
   }
 
   function handleUpdateAvatar(avatarInfo) {
-    connectApi.changeAvatar(avatarInfo)
+    const jwt = localStorage.getItem('jwt');
+    connectApi.changeAvatar(`Bearer ${jwt}`, avatarInfo)
       .then(res => {
-        setCurrentUser(res);
+        setCurrentUser({ avatar: avatarInfo });
       })
       .catch((err) => {
         setErrorText(err);
@@ -126,10 +130,6 @@ function App() {
         history.push('/sign-in');
         setIsSuccess(true);
         setInfoTooltipPopupOpen(true);
-        setUserData({
-          email: res.email,
-          _id: res._id
-        });
       })
       .catch((err) => {
         setErrorText(err);
@@ -156,55 +156,43 @@ function App() {
     if (loggedIn) {
       localStorage.removeItem('jwt');
       setLoggedIn(false);
-      setUserData({});
     }
   }
-
-  React.useEffect(() => {
-    connectApi.getInitialCards()
-      .then(res => {
-        setCards(
-          res.map(item => ({
-            likes: item.likes,
-            link: item.link,
-            name: item.name,
-            owner: item.owner,
-            _id: item._id
-          }))
-        )
-      })
-      .catch((err) => {
-        setErrorText(err);
-      });
-  }, []);
 
   React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       tokenCheck(jwt)
         .then((res) => {
-          setUserData({
-            email: res.data.email,
-            _id: res.data._id
-          });
+          setCurrentUser(res);
           setLoggedIn(true);
         })
         .catch((err) => setErrorText(err));
-    }
 
-    connectApi.getPersonData()
-      .then(res => {
-        setCurrentUser(res);
-      })
-      .catch((err) => setErrorText(err));
+      connectApi.getInitialCards(`Bearer ${jwt}`)
+        .then(res => {
+          setCards(
+            res.map(item => ({
+              likes: item.likes,
+              link: item.link,
+              name: item.name,
+              owner: item.owner,
+              _id: item._id
+            }))
+          )
+        })
+        .catch((err) => {
+          setErrorText(err);
+        });
+    }
   }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <Header
         onClick={handleClickAction}
-        userData={userData}
         loggedIn={loggedIn}
+        currentUser={currentUser}
       />
       <div className="page__divider">{errorText}</div>
       <Switch>
