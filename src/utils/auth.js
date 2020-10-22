@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.tiamin.students.nomoreparties.space';
+export const BASE_URL = 'https://api.tiamin.students.nomoreparties.space';
 /* export const BASE_URL = 'http://localhost:3000'; */
 
 export const register = (email, password) => {
@@ -48,7 +48,7 @@ export const tokenCheck = (token) => {
     .then((res) => {
       if (res.ok) {
         return res.json();
-      }console.log(res,'ОШЫБКА')
+      }
       return res.json().then((res) => {
         return Promise.reject(res.message);
       });
