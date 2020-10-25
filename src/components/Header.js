@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import logo from '../images/logo.svg';
 import { useLocation, Link } from 'react-router-dom';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function Header({ loggedIn, onClick }) {
-  const currentUser = React.useContext(CurrentUserContext);
   const location = useLocation();
-
+  const {currentUser} = useContext(CurrentUserContext);
   return (
     <header className="header">
       <img src={logo} alt="Логотип Mesto - Russia" className="header__logo" />
