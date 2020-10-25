@@ -51,11 +51,11 @@ class Api {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: name,
-        link: link
+        name,
+        link
       })
     })
-      .then(res => {
+      .then(res => {console.log('ANSWER res',res)
         if (!res.ok) return Promise.reject(`Ошибка: ${res.status}`);
         return res.json();
       })

@@ -60,14 +60,14 @@ function App() {
   }
 
   function handleAddPlaceSubmit(newCard) {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = localStorage.getItem('jwt');console.log('newCard',newCard)
     connectApi.saveCardData(`Bearer ${jwt}`, newCard)
-      .then(res => {
+      .then(res => {console.log('newCard res',res)
         setCards(
           [...cards, res]
         );
       })
-      .catch((err) => {
+      .catch((err) => {console.log('newCard err catch',err)
         setErrorText(err);
       });
   }
