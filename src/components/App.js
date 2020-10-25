@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Route, Switch, withRouter, Redirect, useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -32,7 +32,7 @@ function App() {
   const [isSuccess, setIsSuccess] = useState(true);
 
   const [currentUser, setCurrentUser] = useState(userContext);
-
+  console.log('App component',currentUser.name);
   const history = useHistory();
 
   function handleCardLike(card) {
@@ -117,7 +117,7 @@ function App() {
   function handleUpdateAvatar(avatarInfo) {
     const jwt = localStorage.getItem('jwt');
     connectApi.changeAvatar(`Bearer ${jwt}`, avatarInfo)
-      .then(res => {console.log('res',res)
+      .then(res => {console.log('handleUpdateAvatar res',res)
         setCurrentUser(res);
       })
       .catch((err) => {
@@ -170,7 +170,7 @@ function App() {
     }
   }
 
-  React.useEffect(() => {
+  React.useEffect(() => {console.log('App use effect',currentUser.name);
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       tokenCheck(jwt)
