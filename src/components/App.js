@@ -24,7 +24,6 @@ function App() {
   const [selectedCard, setSelectedCard] = useState('');
   const [cardId, setCardId] = useState('');
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
-  /* const currentUser = useContext(CurrentUserContext); */
   const [cards, setCards] = useState([]);
   const [errorText, setErrorText] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
@@ -32,7 +31,6 @@ function App() {
   const [isSuccess, setIsSuccess] = useState(true);
 
   const [currentUser, setCurrentUser] = useState(userContext);
-  console.log('App component',currentUser.name);
   const history = useHistory();
 
   function handleCardLike(card) {
@@ -62,7 +60,7 @@ function App() {
   function handleAddPlaceSubmit(newCard) {
     const jwt = localStorage.getItem('jwt');console.log('newCard',newCard)
     connectApi.saveCardData(`Bearer ${jwt}`, newCard)
-      .then(res => {console.log('newCard res',res)
+      .then(res => {
         setCards(
           [...cards, res]
         );
@@ -106,7 +104,7 @@ function App() {
   function handleUpdateUser({ name, about, avatar }) {
     const jwt = localStorage.getItem('jwt');
     connectApi.savePersonData(`Bearer ${jwt}`, { name, about })
-      .then(() => {console.log('currentUser',currentUser)
+      .then(() => {
         setCurrentUser({ name, about, avatar: currentUser.avatar });
       })
       .catch((err) => {
@@ -117,7 +115,7 @@ function App() {
   function handleUpdateAvatar(avatarInfo) {
     const jwt = localStorage.getItem('jwt');
     connectApi.changeAvatar(`Bearer ${jwt}`, avatarInfo)
-      .then(res => {console.log('handleUpdateAvatar res',res)
+      .then(res => {
         setCurrentUser(res);
       })
       .catch((err) => {
@@ -170,7 +168,7 @@ function App() {
     }
   }
 
-  React.useEffect(() => {console.log('App use effect',currentUser.name);
+  React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       tokenCheck(jwt)

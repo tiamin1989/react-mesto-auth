@@ -55,13 +55,13 @@ class Api {
         link
       })
     })
-      .then(res => {console.log('ANSWER res',res)
+      .then(res => {
         if (!res.ok) return Promise.reject(`Ошибка: ${res.status}`);
         return res.json();
       })
   }
   deleteCardData(token, cardId) {
-    return fetch(`${this.baseUrl}/cards/${cardId}`, {
+    return fetch(`${this.baseUrl}/${cardId}/cards`, {
       method: 'DELETE',
       headers: {
         Authorization: token,
@@ -70,7 +70,7 @@ class Api {
     })
   }
   likeCard(token, cardId, isLiked, id) {
-    return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
       method: isLiked ? 'DELETE' : 'PUT',
       headers: {
         Authorization: token,
