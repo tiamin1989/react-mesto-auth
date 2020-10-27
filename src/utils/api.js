@@ -61,7 +61,7 @@ class Api {
       })
   }
   deleteCardData(token, cardId) {
-    return fetch(`${this.baseUrl}/${cardId}/cards`, {
+    return fetch(`${this.baseUrl}//cards/${cardId}`, {
       method: 'DELETE',
       headers: {
         Authorization: token,
